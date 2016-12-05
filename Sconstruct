@@ -1,0 +1,59 @@
+import os
+from itertools import chain
+
+arch_target = "x64"
+target = 'bin/T3D'
+
+#using in mac
+frameworks = ['OpenGL','CoreFoundation','Cocoa','IOKit','CoreVideo']
+
+
+
+#path
+include_path = ["./src/include"]
+cpp_path = ['./src']
+
+#src files.
+cpp_src=['./src/do_draw.cpp']
+
+
+env = Environment(TARGET_ARCH=arch_target,CPPDEFINES=[])
+
+env.Append( CPPPATH=list(chain(include_path,cpp_path)) )
+# env.Append( CPPPATH=['./bin'] )
+
+platform = env['PLATFORM']
+print "build in platform:",platform
+
+
+
+# env.StaticLibrary(target='./bin/lua52',source=list(chain(lua_src,socket_src,mime_src)),
+# 	# LIBS=["WS2_32"],
+# 	# LIBPATH=[r"D:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x86"]
+# 	)
+
+def build_in_darwin():
+	link_flags = " ".join(["-framework %s"%s for s in frameworks])
+	cc_flags = " -std=c++0x"
+	libs = ['glew','glfw3']
+	lib_path = ['./lib/mac',]
+	env.Program(target=target, source=cpp_src, CCFLAGS=cc_flags, LINKFLAGS=link_flags,
+		LIBS = libs, LIBPATH = lib_path)
+
+def build_in_win32():
+	libs = ['glew32d','glfw3']
+	lib_path = ['./lib/win32']
+	env.Program(target=target, source=cpp_src, LINKFLAGS=link_flags,
+		LIBS = libs, LIBPATH = lib_path)
+
+
+
+def build_main():
+	if platform == "darwin":
+		build_in_darwin()
+	elif platform == "win32":
+		build_in_win32()
+	else:
+		print "platform:%s not config."%platform
+
+build_main()
