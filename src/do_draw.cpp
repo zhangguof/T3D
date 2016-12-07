@@ -21,6 +21,9 @@ const char* FRAG_SHADER_FILE = "shader/fragmentShader.glsl";
 
 CBMgr cb_mgr;
 
+FT_Library ft;
+FT_Face face;
+
 class SHADER
 {
     GLuint shader;
@@ -342,6 +345,11 @@ void test(double interval)
 
 int main(int argc, char **argv)
 {
+    if (FT_Load_Char(face, 'A', FT_LOAD_RENDER))
+    {
+        std::cout<<"ERROR::FREETYPE:Failed to load GLyph"<<std::endl;
+        return 0;
+    }
     
     printf("start opengl\n");
     

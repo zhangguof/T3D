@@ -6,24 +6,6 @@
 #include <map>
 #include <vector>
 
-typedef void (*UpdateFunc)(double interval);
-class CBMgr
-{
-    std::vector<UpdateFunc> v;
-public:
-    void add_callback(UpdateFunc f)
-    {
-        v.push_back(f);
-    }
-    void update(double interval)
-    {
-        for (auto i = v.begin(); i != v.end(); ++i)
-        {
-            (*i)(interval);
-        }
-    }
-};
-
 
 
 template<typename T, unsigned int SIZE>
