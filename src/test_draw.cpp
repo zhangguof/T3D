@@ -7,12 +7,8 @@
 //
 
 #include "T3D.hpp"
+#include "text_render.hpp"
 
-typedef DrawBuffer<GLuint> DBuff;
-
-
-FT_Library ft;
-FT_Face face;
 
 //GLuint img_data[100*100];
 DrawBuffer<GLuint> img_data(WIN_WIDTH,WIN_HEIGHT);
@@ -84,25 +80,37 @@ void init_img(int start_idx=0)
     }
 }
 
+void text(char c)
+{
+    auto ch = get_char(c);
+    img_data.overwrite(ch.buff, 10, 10, ch.Size[0],ch.Size[1]);
+
+
+}
+
 
 double last_check_time = 0.0;
 int start_idx = 0;
 void test(double interval)
 {
     last_check_time += interval;
-    if(last_check_time > 0.5)
-    {
-        std::cout<<(1.0/interval)<<std::endl;
-        start_idx += 1;
-        if(start_idx >= 3)
-        {
-            start_idx = 0;
-        }
-        init_img(start_idx);
-        last_check_time = 0.0;
-    }
+    // if(last_check_time > 0.5)
+    // {
+    //     std::cout<<(1.0/interval)<<std::endl;
+    //     start_idx += 1;
+    //     if(start_idx >= 3)
+    //     {
+    //         start_idx = 0;
+    //     }
+    //     init_img(start_idx);
+    //     last_check_time = 0.0;
+    // }
+    img_data.clear_color(RGB(255,255,255));
+    text((GLulong)'A');
     
 }
+
+
 
 
 int main(int argc, char **argv)
@@ -120,6 +128,7 @@ int main(int argc, char **argv)
     Device *pdev = new Device();
     
     init_img();
+    init_font("res/NotoSansCJKsc-Black.otf");
 
 
     pdev->init_render();

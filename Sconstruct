@@ -35,7 +35,7 @@ print "build in platform:",platform
 def build_in_darwin():
 	link_flags = " ".join(["-framework %s"%s for s in frameworks])
 	cc_flags = " -std=c++0x"
-	libs = ['glew','glfw3', 'freetype']
+	libs = ['glew','glfw3', 'freetype', 'z','bz2','png16']
 	lib_path = ['./lib/mac',]
 	env.Program(target=target, source=cpp_src, CCFLAGS=cc_flags, LINKFLAGS=link_flags,
 		LIBS = libs, LIBPATH = lib_path)

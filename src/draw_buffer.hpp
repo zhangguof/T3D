@@ -1,80 +1,8 @@
 
 #ifndef _H_DRAW_BUFFER_
 #define _H_DRAW_BUFFER_
-#include <iostream>
-#include <cassert>
-#include <map>
-#include <vector>
+#include "math.hpp"
 
-
-
-template<typename T, unsigned int SIZE>
-class Vec
-{
-    T vec[SIZE];
-    const static int size = SIZE;
-public:
-    Vec(){}
-    Vec(T *a)
-    {
-        mem_cpy(a,SIZE);
-    }
-    Vec(T a,T b)
-    {
-        vec[0] = a;
-        vec[1] = b;
-    }
-    Vec(T a,T b,T c)
-    {
-        vec[0] = a;
-        vec[1] = b;
-        vec[2] = c;
-    }
-    Vec(T a,T b,T c,T d)
-    {
-        vec[0] = a;
-        vec[1] = b;
-        vec[2] = c;
-        vec[3] = d;
-    }
-    void mem_cpy(T* a, int size)
-    {
-        for(int i=0;i<size;++i)
-        {
-            vec[i] = a[i];
-        }
-    }
-    T get_rgb_val()
-    {
-        assert(SIZE>=3);
-        return (vec[0]<<24)|(vec[1]<<16)|(vec[2]<<8);
-    }
-    T get_rbga_val()
-    {
-        assert(SIZE>=4);
-        return get_rgb_val()|(vec[3]);
-    }
-    T &operator[](unsigned int index)
-    {
-        return vec[index];
-    }
-
-};
-
-typedef Vec<int,2> Vec2i;
-typedef Vec<int,3> Vec3i;
-typedef Vec<int,4> Vec4i;
-
-typedef Vec<unsigned int,2> Vec2u;
-typedef Vec<unsigned int,3> Vec3u;
-typedef Vec<unsigned int,4> Vec4u;
-
-typedef Vec<float,2> Vec2f;
-typedef Vec<float,3> Vec3f;
-typedef Vec<float,4> Vec4f;
-
-typedef Vec3u RGB;
-typedef Vec4u RGBA;
 
 const int COLORBITS = 8;
 template<typename T>
@@ -109,6 +37,28 @@ public:
         for(int i=0;i<width*heigth;++i)
         {
             data[i]=val;
+        }
+    }
+    void mem_cpy(T* src)
+    {
+        for(int i=0;i<width*heigth;++i)
+        {
+            data[i] = src[i];
+            printf("%X\n",src[i]);
+        }
+    }
+    void overwrite(void* src,int x0,int y0, int w,int h)
+    {
+        for(int y=0;y<h;++y)
+        {
+            for(int x=0;x<w;++x)
+            {
+                int new_x = x0+x;
+                int new_y = y0+y;
+                if(new_x>=width||new_y>=heigth)
+                    continue;
+                data[new_x + new_y*width] = RGB(255,0,0).get_rgb_val();//(((unsigned char*)src)[x+y*w])<<24;
+            }
         }
     }
     T* get_buf()

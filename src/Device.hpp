@@ -15,6 +15,7 @@ extern const char* FRAG_SHADER_FILE;
 
 typedef DrawBuffer<GLuint> DBuff;
 
+
 class UpdateObj
 {
 public:
