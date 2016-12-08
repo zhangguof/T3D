@@ -100,8 +100,8 @@ void test(double interval)
     if(last_check_time > 0.5)
     {
         //std::cout<<(1.0/interval)<<std::endl;
-        sprintf(buf,"FPS:%.0f",(1.0/interval));
-        render_text(text_data,buf,10,10,0xFF000000);
+        sprintf(buf,"FPS:%.2f",(1.0/interval));
+        render_text(text_data,buf,30,30,0xFF000000);
         init_img(start_idx);
         last_check_time = 0.0;
     }
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
     Device *pdev = new Device();
     
     init_img();
-    init_font("res/NotoSansCJKsc-Black.otf");
+    init_font("res/NotoSansCJKsc-Black.otf",30);
 
 
     pdev->init_render();

@@ -50,7 +50,7 @@ GLulong get_unicode(const char *s, size_t &idx)
     
 }
 
-void init_font(const char* font_path)
+void init_font(const char* font_path, int size=45)
 {
     if(FT_Init_FreeType(&ft))
         std::cout<<"ERROR::FREETYPE: Could not init FreeType Libary"<<std::endl;
@@ -62,7 +62,7 @@ void init_font(const char* font_path)
     if(error)
         std::cout<<"ERROR::FREETYTE: select charmap file."<<std::endl;
     
-    FT_Set_Pixel_Sizes(face, 0, 30);
+    FT_Set_Pixel_Sizes(face, 0, size);
 
     
 }
@@ -80,7 +80,7 @@ void add_font_texture(GLulong c)
     GLuint width = face->glyph->bitmap.width;
     GLuint rows  = face->glyph->bitmap.rows;
     auto bitmap = face->glyph->bitmap;
-    printf("ptich:%d,num_grays:%d,pixel_mode:%d,rows:%d,width:%d,advance:%d\n", bitmap.pitch,bitmap.num_grays,bitmap.pixel_mode,bitmap.rows,bitmap.width,face->glyph->advance.x);
+    //printf("ptich:%d,num_grays:%d,pixel_mode:%d,rows:%d,width:%d,advance:%d\n", bitmap.pitch,bitmap.num_grays,bitmap.pixel_mode,bitmap.rows,bitmap.width,face->glyph->advance.x);
 
     auto bf = new FontBuff(width,rows);
     
@@ -132,6 +132,8 @@ void render_text(DrawBuffer<GLuint> &text_buff, const char* s,
                 int x, int y, unsigned int color_val)
 {
     text_buff.clear_color();
+    int width = text_buff.width;
+    int heigth = text_buff.heigth;
     // unsigned int color_val = color.get_rgb_val();
     const char* p = s;
     size_t idx = 0;
@@ -148,7 +150,11 @@ void render_text(DrawBuffer<GLuint> &text_buff, const char* s,
         auto ch_buf = ch.buff->get_buf();
         //左上角坐标系
         int xpos = x + ch.Bearing[0];
-        int ypos = y + (ch.Size[1] - ch.Bearing[1]);
+        //int ypos = y - (ch.Size[1] - ch.Bearing[1]);
+        int ypos = y - ch.Bearing[1];
+        //printf("heighe:%d,ypos:%d,new_pos:%d",text_buff.heigth,ypos,text_buff.heigth-ypos);
+        //ypos = text_buff.heigth - ypos;
+
 
         int w = ch.Size[0];
         int h = ch.Size[1];
@@ -157,6 +163,10 @@ void render_text(DrawBuffer<GLuint> &text_buff, const char* s,
         {
             for(int j=0;j<w;++j)
             {
+                int new_x = xpos + j;
+                int new_y = ypos + i;
+                if(new_x<0 || new_x>=width || new_y<0 || new_y>=heigth)
+                    continue;
                 if(ch_buf[j+i*w])
                     text_buff.set_point(xpos+j,ypos+i,color_val);
             }

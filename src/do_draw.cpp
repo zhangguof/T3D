@@ -280,7 +280,7 @@ void init_img(int start_idx=0)
 
     int ny = win_height/h;
     int ry = win_height%h;
-    std::cout<<rx<<" "<<ry<<std::endl;
+    //std::cout<<rx<<" "<<ry<<std::endl;
     int cnt=start_idx;
     for(int y=0;y<ny;y++)
     {

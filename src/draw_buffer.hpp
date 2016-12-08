@@ -9,10 +9,10 @@ template<typename T>
 class DrawBuffer
 {
     T *data;
-    int width;
-    int heigth;
     static const int bitSize = sizeof(T);
 public:
+    int width;
+    int heigth;
     DrawBuffer()
     {
         data = nullptr;
@@ -27,9 +27,11 @@ public:
     {
         alloc(w,h);
     }
-    void set_point(int x, int y, T val)
+    void set_point(int x, int y, T val,bool is_revert_y=0)
     {
-        assert(x<width && y<heigth);
+        if(is_revert_y)
+            y = heigth - y;
+        assert(x<width && y<heigth && y>=0);
         data[x+y*width] = val;
     }
     void clear_color(RGB color)
