@@ -9,7 +9,7 @@
 
 typedef DrawBuffer<unsigned char> FontBuff;
 struct Character{
-    unsigned char* buff;
+    FontBuff* buff;
     Vec2i Size;
     Vec2i Bearing;
     GLuint Advance;
@@ -62,7 +62,7 @@ void init_font(const char* font_path)
     if(error)
         std::cout<<"ERROR::FREETYTE: select charmap file."<<std::endl;
     
-    FT_Set_Pixel_Sizes(face, 0, 90);
+    FT_Set_Pixel_Sizes(face, 0, 30);
 
     
 }
@@ -80,10 +80,10 @@ void add_font_texture(GLulong c)
     GLuint width = face->glyph->bitmap.width;
     GLuint rows  = face->glyph->bitmap.rows;
     auto bitmap = face->glyph->bitmap;
-    printf("ptich:%d,num_grays:%d,pixel_mode:%d,rows:%d,width:%d\n", bitmap.pitch,bitmap.num_grays,bitmap.pixel_mode,bitmap.rows,bitmap.width);
+    printf("ptich:%d,num_grays:%d,pixel_mode:%d,rows:%d,width:%d,advance:%d\n", bitmap.pitch,bitmap.num_grays,bitmap.pixel_mode,bitmap.rows,bitmap.width,face->glyph->advance.x);
 
-    //auto bf = new FontBuff(width,rows);
-    auto bf = face->glyph->bitmap.buffer;
+    auto bf = new FontBuff(width,rows);
+    
     // glGenTextures(1, &texture);
     // glBindTexture(GL_TEXTURE_2D, texture);
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, , , 0, GL_RED, GL_UNSIGNED_BYTE, face->glyph->bitmap.buffer);
@@ -93,7 +93,7 @@ void add_font_texture(GLulong c)
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //bf->mem_cpy(face->glyph->bitmap.buffer);
+    bf->mem_cpy(face->glyph->bitmap.buffer);
     // for(int r=0;r<bitmap.rows;r++)
     // {
     //     for(int w=0;w<bitmap.width;w++)
@@ -128,10 +128,11 @@ Character *get_char(GLulong c)
     return &Characters[c];
 }
 
-void render_text(DrawBuffer<GLuint>&text_buff, const char* s, int x, int y, RGB &color)
+void render_text(DrawBuffer<GLuint> &text_buff, const char* s, 
+                int x, int y, unsigned int color_val)
 {
     text_buff.clear_color();
-    unsigned int color_val = color.get_rgb_val();
+    // unsigned int color_val = color.get_rgb_val();
     const char* p = s;
     size_t idx = 0;
     size_t len = strlen(s);
@@ -144,7 +145,7 @@ void render_text(DrawBuffer<GLuint>&text_buff, const char* s, int x, int y, RGB 
             add_font_texture(c);
         }
         Character ch = Characters[c];
-        auto ch_buf = ch.buff;
+        auto ch_buf = ch.buff->get_buf();
         //左上角坐标系
         int xpos = x + ch.Bearing[0];
         int ypos = y + (ch.Size[1] - ch.Bearing[1]);

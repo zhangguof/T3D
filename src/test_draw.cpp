@@ -8,7 +8,7 @@
 
 #include "T3D.hpp"
 //#include "text_render.hpp"
-
+#include "text_render.hpp"
 
 //GLuint img_data[100*100];
 DrawBuffer<GLuint> img_data(WIN_WIDTH,WIN_HEIGHT);
@@ -93,23 +93,21 @@ void init_img(int start_idx=0)
 
 double last_check_time = 0.0;
 int start_idx = 0;
+char buf[100];
 void test(double interval)
 {
     last_check_time += interval;
-    // if(last_check_time > 0.5)
-    // {
-    //     std::cout<<(1.0/interval)<<std::endl;
-    //     start_idx += 1;
-    //     if(start_idx >= 3)
-    //     {
-    //         start_idx = 0;
-    //     }
-    //     init_img(start_idx);
-    //     last_check_time = 0.0;
-    // }
+    if(last_check_time > 0.5)
+    {
+        //std::cout<<(1.0/interval)<<std::endl;
+        sprintf(buf,"FPS:%.0f",(1.0/interval));
+        render_text(text_data,buf,10,10,0xFF000000);
+        init_img(start_idx);
+        last_check_time = 0.0;
+    }
     //img_data.clear_color(RGB(255,255,255));
-
-    //render_text(text_data,"ABCDEFG",10,10,RGB(255,0,0));
+    
+    
     
 }
 
@@ -138,6 +136,7 @@ int main(int argc, char **argv)
     //pdev->set_buf(&img_data);
     text_data.clear_color();
     pdev->set_buf(&text_data);
+
     //UpdatePair p((UpdateObj*)&dev,(ObjUpdateFunc)&Device::update);
     regist_objupdate(pdev);
     regist_update(test);

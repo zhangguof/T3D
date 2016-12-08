@@ -68,6 +68,7 @@ public:
                     continue;
                 unsigned char col = src[x+y*w];
                 data[new_x + new_y*width] = RGB(col,0,0).get_rgb_val();
+            }
                 
         }
     }
