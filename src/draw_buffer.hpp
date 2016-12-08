@@ -11,6 +11,7 @@ class DrawBuffer
     T *data;
     int width;
     int heigth;
+    static const int bitSize = sizeof(T);
 public:
     DrawBuffer()
     {
@@ -34,9 +35,17 @@ public:
     void clear_color(RGB color)
     {
         T val = color.get_rgb_val();
+        mem_set(val);
+    }
+    void clear_color(unsigned int color=0)
+    {
+        mem_set(color);
+    }
+    void mem_set(T val)
+    {
         for(int i=0;i<width*heigth;++i)
         {
-            data[i]=val;
+            data[i] = val;
         }
     }
     void mem_cpy(T* src)
@@ -44,10 +53,10 @@ public:
         for(int i=0;i<width*heigth;++i)
         {
             data[i] = src[i];
-            printf("%X\n",src[i]);
+            //printf("%X\n",src[i]);
         }
     }
-    void overwrite(void* src,int x0,int y0, int w,int h)
+    void overwrite(unsigned char* src,int x0,int y0, int w,int h)
     {
         for(int y=0;y<h;++y)
         {
@@ -57,8 +66,9 @@ public:
                 int new_y = y0+y;
                 if(new_x>=width||new_y>=heigth)
                     continue;
-                data[new_x + new_y*width] = RGB(255,0,0).get_rgb_val();//(((unsigned char*)src)[x+y*w])<<24;
-            }
+                unsigned char col = src[x+y*w];
+                data[new_x + new_y*width] = RGB(col,0,0).get_rgb_val();
+                
         }
     }
     T* get_buf()

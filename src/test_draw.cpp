@@ -7,11 +7,13 @@
 //
 
 #include "T3D.hpp"
-#include "text_render.hpp"
+//#include "text_render.hpp"
 
 
 //GLuint img_data[100*100];
 DrawBuffer<GLuint> img_data(WIN_WIDTH,WIN_HEIGHT);
+
+DrawBuffer<GLuint> text_data(WIN_WIDTH,WIN_HEIGHT);
 
 RGB r(255,0,0);
 RGB g(0,255,0);
@@ -28,7 +30,7 @@ void set_grid_img(int x,int y,int w, int h,int cnt)
         for(int j=0;j<h;j++)
         {
             int new_y = y*h+j;
-            if(new_y>=WIN_HEIGHT)
+            if(new_y >= WIN_HEIGHT)
                 continue;
             img_data.set_point(new_x,new_y,col[cnt%3].get_rgb_val());
         }
@@ -80,13 +82,13 @@ void init_img(int start_idx=0)
     }
 }
 
-void text(char c)
-{
-    auto ch = get_char(c);
-    img_data.overwrite(ch.buff, 10, 10, ch.Size[0],ch.Size[1]);
+// void text(char c)
+// {
+//     auto ch = get_char(c);
+//     img_data.overwrite(ch.buff->get_buf(), 10, 10, ch.Size[0],ch.Size[1]);
 
 
-}
+// }
 
 
 double last_check_time = 0.0;
@@ -105,8 +107,9 @@ void test(double interval)
     //     init_img(start_idx);
     //     last_check_time = 0.0;
     // }
-    img_data.clear_color(RGB(255,255,255));
-    text((GLulong)'A');
+    //img_data.clear_color(RGB(255,255,255));
+
+    //render_text(text_data,"ABCDEFG",10,10,RGB(255,0,0));
     
 }
 
@@ -132,7 +135,9 @@ int main(int argc, char **argv)
 
 
     pdev->init_render();
-    pdev->set_buf(&img_data);
+    //pdev->set_buf(&img_data);
+    text_data.clear_color();
+    pdev->set_buf(&text_data);
     //UpdatePair p((UpdateObj*)&dev,(ObjUpdateFunc)&Device::update);
     regist_objupdate(pdev);
     regist_update(test);
