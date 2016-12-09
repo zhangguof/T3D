@@ -14,7 +14,7 @@ include_path = ["./src/include"]
 cpp_path = ['./src']
 
 #src files.
-cpp_src=['./src/test_draw.cpp','./src/Device.cpp']
+cpp_src=['./src/test_draw.cpp','./src/Device.cpp','./src/Render.cpp']
 
 
 env = Environment(TARGET_ARCH=arch_target,CPPDEFINES=[])

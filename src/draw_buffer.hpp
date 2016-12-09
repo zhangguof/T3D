@@ -22,12 +22,13 @@ public:
        width = w;
        heigth = h;
        data = new T[w*h]; 
+       clear_color(0);
     }
     DrawBuffer(int w,int h)
     {
         alloc(w,h);
     }
-    void set_alpth_pixel(int x, int y, T val)
+    void set_alpha_pixel(int x, int y, T val)
     {
         //T &p = mix_pixel[GET_POS(x,y)];
         if(val&0x000000FF)
@@ -47,7 +48,7 @@ public:
         int max_w = x0+w>=width?width:x0+w;
         for(int x=x0;x<max_w;++x)
         {
-            set_alpth_pixel(x,y0,val);
+            set_alpha_pixel(x,y0,val);
         }
     }
 
@@ -113,6 +114,8 @@ public:
     }
 };
 
+
+typedef DrawBuffer<unsigned int> FrameBuffer;
 
 
 #endif

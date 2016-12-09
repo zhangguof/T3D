@@ -13,7 +13,7 @@ const int WIN_HEIGHT = 480;
 extern const char* VERTEX_SHADER_FILE;
 extern const char* FRAG_SHADER_FILE;
 
-typedef DrawBuffer<GLuint> DBuff;
+
 
 
 class UpdateObj
@@ -59,7 +59,7 @@ class Device: public UpdateObj
     int win_height;
     const static int buff_num = 2;
     //DrawBuffer<GLuint> buff[buff_num];
-    DBuff* cur_buf;
+    FrameBuffer* cur_buf;
 
     //opengl
     VAOMGR *vao;
@@ -68,7 +68,7 @@ class Device: public UpdateObj
     GLuint texture;
 public:
     Device(int w=WIN_WIDTH, int h=WIN_HEIGHT);
-    void set_buf(DBuff* buf);
+    void set_buf(FrameBuffer* buf);
     void update_texture();
 
     void init_render();
@@ -117,7 +117,7 @@ public:
 };
 
 
-GLFWwindow* init_glfw_window();
+GLFWwindow* init_glfw_window(int w,int h);
 void glfw_loop();
 void regist_update(UpdateFunc f);
 void regist_objupdate(UpdateObj* p);
