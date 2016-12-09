@@ -131,7 +131,7 @@ Character *get_char(GLulong c)
 void render_text(DrawBuffer<GLuint> &text_buff, const char* s, 
                 int x, int y, unsigned int color_val)
 {
-    text_buff.clear_color();
+    //text_buff.clear_color();
     int width = text_buff.width;
     int heigth = text_buff.heigth;
     // unsigned int color_val = color.get_rgb_val();

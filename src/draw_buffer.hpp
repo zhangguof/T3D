@@ -3,7 +3,7 @@
 #define _H_DRAW_BUFFER_
 #include "math.hpp"
 
-
+#define GET_POS(x,y) (x+y*width)
 const int COLORBITS = 8;
 template<typename T>
 class DrawBuffer
@@ -27,6 +27,30 @@ public:
     {
         alloc(w,h);
     }
+    void set_alpth_pixel(int x, int y, T val)
+    {
+        //T &p = mix_pixel[GET_POS(x,y)];
+        if(val&0x000000FF)
+            data[GET_POS(x,y)] = val;
+
+    }
+    void set_range_pixel(int x0,int y0,int w,int h,T val)
+    {
+        int max_h = y0+h>=heigth?heigth:y0+h;
+        for(int y=y0;y<max_h;++y)
+        {
+            set_row_pixel(x0,y,w,val);
+        }
+    }
+    void set_row_pixel(int x0, int y0,int w,T val)
+    {
+        int max_w = x0+w>=width?width:x0+w;
+        for(int x=x0;x<max_w;++x)
+        {
+            set_alpth_pixel(x,y0,val);
+        }
+    }
+
     void set_point(int x, int y, T val,bool is_revert_y=0)
     {
         if(is_revert_y)
@@ -37,6 +61,11 @@ public:
     void clear_color(RGB color)
     {
         T val = color.get_rgb_val();
+        mem_set(val);
+    }
+    void clear_color(RGBA color)
+    {
+        T val = color.get_rgba_val();
         mem_set(val);
     }
     void clear_color(unsigned int color=0)

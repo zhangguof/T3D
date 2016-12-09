@@ -7,8 +7,8 @@
 const int WIN_WIDTH = 640;
 const int WIN_HEIGHT = 480;
 
-const int win_width = WIN_WIDTH;
-const int win_height = WIN_HEIGHT;
+// const int win_width = WIN_WIDTH;
+// const int win_height = WIN_HEIGHT;
 
 extern const char* VERTEX_SHADER_FILE;
 extern const char* FRAG_SHADER_FILE;
@@ -121,6 +121,8 @@ GLFWwindow* init_glfw_window();
 void glfw_loop();
 void regist_update(UpdateFunc f);
 void regist_objupdate(UpdateObj* p);
+
+double time_now();
 
 
 #endif

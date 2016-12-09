@@ -1,57 +1,38 @@
-//
-//  triangle.cpp
-//  firstTriangle
-//
-//  Created by tony on 16/3/21.
-//  Copyright © 2016年 tony. All rights reserved.
-//
-
 #include "T3D.hpp"
-//#include "text_render.hpp"
 #include "text_render.hpp"
 
-//GLuint img_data[100*100];
-DrawBuffer<GLuint> img_data(WIN_WIDTH,WIN_HEIGHT);
 
-DrawBuffer<GLuint> text_data(WIN_WIDTH,WIN_HEIGHT);
+typedef unsigned int COLOR;
+const COLOR BLACK   = 0x000000;
+const COLOR RED     = 0xFF0000;
+const COLOR GREEN   = 0x00FF00;
+const COLOR BLUE    = 0x0000FF;
+const COLOR WHITE   = 0xFFFFFF;
 
-RGB r(255,0,0);
-RGB g(0,255,0);
-RGB b(0,0,255);
-RGB col[3] = {r,g,b};
+DrawBuffer<GLuint> frame_buffer(WIN_WIDTH,WIN_HEIGHT);
+
+RGBA r(255,0,0,1);
+RGBA g(0,255,0,1);
+RGBA b(0,0,255,1);
+RGBA col[3] = {r,g,b};
 
 void set_grid_img(int x,int y,int w, int h,int cnt)
 {
-    for(int i=0;i<w;i++)
-    {
-        int new_x = x*w+i;
-        if(new_x>=WIN_WIDTH)
-            continue;
-        for(int j=0;j<h;j++)
-        {
-            int new_y = y*h+j;
-            if(new_y >= WIN_HEIGHT)
-                continue;
-            img_data.set_point(new_x,new_y,col[cnt%3].get_rgb_val());
-        }
-    }
+
+    frame_buffer.set_range_pixel(x*w,y*h,w,h,col[cnt%3].get_rgba_val());
 }
-    
 
-
-void init_img(int start_idx=0)
+void render_test_img(int start_idx=0)
 {
 
-
-    //img_data.clear_color(rgb);
     int w = 50;
     int h = 50;
-    int nx = win_width/w;
-    int rx = win_width%w;
+    int nx = WIN_WIDTH/w;
+    int rx = WIN_WIDTH%w;
 
-    int ny = win_height/h;
-    int ry = win_height%h;
-    std::cout<<rx<<" "<<ry<<std::endl;
+    int ny = WIN_HEIGHT/h;
+    int ry = WIN_HEIGHT%h;
+
     int cnt=start_idx;
     for(int y=0;y<ny;y++)
     {
@@ -82,33 +63,61 @@ void init_img(int start_idx=0)
     }
 }
 
-// void text(char c)
-// {
-//     auto ch = get_char(c);
-//     img_data.overwrite(ch.buff->get_buf(), 10, 10, ch.Size[0],ch.Size[1]);
-
-
-// }
-
 
 double last_check_time = 0.0;
 int start_idx = 0;
 char buf[100];
-void test(double interval)
+void test_img(double interval)
 {
+    render_test_img(start_idx);
     last_check_time += interval;
     if(last_check_time > 0.5)
     {
-        //std::cout<<(1.0/interval)<<std::endl;
-        sprintf(buf,"FPS:%.2f",(1.0/interval));
-        render_text(text_data,buf,30,30,0xFF000000);
-        init_img(start_idx);
+
         last_check_time = 0.0;
+        // start_idx+=1;
+        // if(start_idx>2)
+        //     start_idx=0;
+
     }
-    //img_data.clear_color(RGB(255,255,255));
     
+}
+
+
+Device* pdev;
+double last_time=0;
+
+void render(double interval)
+{
+    frame_buffer.clear_color();
+    test_img(interval);
+    // sprintf(buf,"FPS:%.0f",(1.0/interval));
     
+    double now = time_now();
+    if(now-last_time > (1/15.0))
+    {
+        sprintf(buf,"FPS:%0.1f",(1.0/interval));
+        
+        last_time = now;
+    }
+    render_text(frame_buffer,buf,30,30,0x000000FF);
     
+
+    pdev->render(interval);
+}
+
+void init()
+{
+    frame_buffer.clear_color(0x000000);
+
+   //init_font("res/NotoSansCJKsc-Black.otf",25); 
+   init_font("res/Arial.ttf",30);
+   pdev->init_render();
+   pdev->set_buf(&frame_buffer);
+
+    //UpdatePair p((UpdateObj*)&dev,(ObjUpdateFunc)&Device::update);
+    //regist_objupdate(pdev);
+    regist_update(render);
 }
 
 
@@ -116,35 +125,18 @@ void test(double interval)
 
 int main(int argc, char **argv)
 {
-    // if (FT_Load_Char(face, 'A', FT_LOAD_RENDER))
-    // {
-    //     std::cout<<"ERROR::FREETYPE:Failed to load GLyph"<<std::endl;
-    //     return 0;
-    // }
     
     printf("starting.......\n");
-    std::cout<<VERTEX_SHADER_FILE<<" "<<FRAG_SHADER_FILE<<std::endl;
+
     GLFWwindow* window = init_glfw_window();
     
-    Device *pdev = new Device();
-    
-    init_img();
-    init_font("res/NotoSansCJKsc-Black.otf",30);
+    pdev = new Device();
 
-
-    pdev->init_render();
-    //pdev->set_buf(&img_data);
-    text_data.clear_color();
-    pdev->set_buf(&text_data);
-
-    //UpdatePair p((UpdateObj*)&dev,(ObjUpdateFunc)&Device::update);
-    regist_objupdate(pdev);
-    regist_update(test);
+    init();
 
     glfw_loop();
 
 
-    
     
     glBindVertexArray(0);
     glfwDestroyWindow(window);
@@ -153,7 +145,6 @@ int main(int argc, char **argv)
     
     glfwTerminate();
     exit(EXIT_SUCCESS);
-    
-    
+
     
 }

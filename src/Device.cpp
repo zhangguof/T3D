@@ -221,7 +221,7 @@ GLFWwindow* init_glfw_window()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    glfw_window = glfwCreateWindow(win_width,win_height, "test3d", NULL, NULL);
+    glfw_window = glfwCreateWindow(WIN_WIDTH,WIN_HEIGHT, "test3d", NULL, NULL);
     if(!glfw_window)
     {
         glfwTerminate();
@@ -274,6 +274,11 @@ void regist_update(UpdateFunc f)
 void regist_objupdate(UpdateObj* p)
 {
     cb_mgr->add_callback2(p);
+}
+
+double time_now()
+{
+    return glfwGetTime();
 }
 
 
