@@ -1,7 +1,7 @@
 #include "Render.hpp"
 #include "text_render.hpp"
 
-#define GET_BUFF_POS(x,y,w) (x+y*w)
+#define GET_BUFF_POS(x,y,w) ((x)+(y)*(w))
 
 Render::Render(int w,int h)
 {
@@ -47,7 +47,6 @@ void Render::load_r8b8g8a8_bitmap(unsigned int* pbuff,int w,int h,int x0,int y0)
 {
 	int max_w = (x0+w>=width)?width:x0+w;
 	int max_h = (y0+h>=height)?height:y0+h;
-	printf("max_w,max_h:%d,%d,%d\n",max_w,max_h,w);
 	for(int y=y0;y<max_h;++y)
 	{
 		for(int x=x0;x<max_w;++x)
