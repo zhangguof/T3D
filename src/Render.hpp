@@ -24,9 +24,13 @@ public:
 	void set_pen_size(int size);
 	void draw_text(const char* s,int x,int y, Color color);
 	
+	void setPixel(int x,int y, Color color);
 	void draw_point(int x,int y, Color color);
 	void draw_line(int x0,int y0,int x1,int y1,Color color);
-	
+	void draw_line(Vec2i p0, Vec2i p1, Color color);
+	void draw_polygon(Vec2i *points,int cnt, Color color);
+	void draw_polygon(int points[],int cnt, Color color);
+
 	void load_r8b8g8a8_bitmap(unsigned int* pbuff,int w,int h,int x0,int y0);
 	void clear_buff_color(Color col=0);
 

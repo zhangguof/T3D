@@ -52,10 +52,8 @@ public:
         }
     }
 
-    void set_point(int x, int y, T val,bool is_revert_y=0)
+    void set_point(int x, int y, T val)
     {
-        if(is_revert_y)
-            y = heigth - y;
         assert(x<width && y<heigth && y>=0);
         data[x+y*width] = val;
     }

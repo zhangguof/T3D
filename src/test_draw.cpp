@@ -23,25 +23,21 @@ unsigned int p_bitmap[WIN_WIDTH*WIN_HEIGHT];
 void set_grid_img(int x,int y,int w, int h,int cnt)
 {
     unsigned int c = col[cnt%3].get_rgba_val();
-    auto pb = p_render->get_buff();
-    pb->set_range_pixel(x*w,y*h,w,h,col[cnt%3].get_rgba_val());
 
-    //frame_buffer.set_range_pixel(x*w,y*h,w,h,col[cnt%3].get_rgba_val());
-    // for (int i=0;i<w;i++)
-    // {
-    //     int new_x = x*w+i;
-    //     if(new_x>=WIN_WIDTH)
-    //         continue;
-    //     for(int j=0;j<h;j++)
-    //     {
-    //         int new_y = y*h+j;
-    //         if(new_y>=WIN_HEIGHT)
-    //             continue;
-    //         //p_bitmap[new_x+new_y*WIN_WIDTH] = c;
-    //         //p_render->load_r8b8g8a8_bitmap(p_bitmap,w,h,new_x,new_y);
-
-    //     }
-    // }
+    for (int i=0;i<w;i++)
+    {
+        int new_x = x*w+i;
+        if(new_x>=WIN_WIDTH)
+            continue;
+        for(int j=0;j<h;j++)
+        {
+            int new_y = y*h+j;
+            if(new_y>=WIN_HEIGHT)
+                continue;
+            p_bitmap[new_x+new_y*WIN_WIDTH] = c;
+           
+        }
+    }
 
 }
 
@@ -84,7 +80,7 @@ void render_test_img(int start_idx=0)
                 cnt++;
             }
     }
-    //p_render->load_r8b8g8a8_bitmap(p_bitmap,WIN_WIDTH,WIN_HEIGHT,0,0);
+    p_render->load_r8b8g8a8_bitmap(p_bitmap,WIN_WIDTH,WIN_HEIGHT,0,0);
 }
 
 
@@ -111,27 +107,50 @@ void test_img(double interval)
 
 double last_time=0;
 
-
+int points[] = {
+    -310,0,
+    0,230,
+    310,0,
+    0,-230,
+};
 
 void render(double interval)
 {
     p_render->clear_buff_color();
-    //frame_buffer.clear_color();
-    
-    // sprintf(buf,"FPS:%.0f",(1.0/interval));
-    //pbuf->clear_color();
-    
-    test_img(interval);
+
+    //render img
+    //test_img(interval);
+    //draw point
+    Color c = 0xFF0000FF;
+    // p_render->draw_point(0,0,c);
+    // p_render->draw_point(320,0,c);
+    // p_render->draw_point(-320,0,c);
+    // p_render->draw_point(315,235,c);
+    // p_render->draw_point(-100,100,c);
+    // p_render->draw_point(-100,-100,c);
+    // p_render->draw_point(100,-100,c);
+
+    // p_render->draw_line(-100,100,100,-100,c);
+    // p_render->draw_line(-50,0,0,50,c);
+    // p_render->draw_line(-50,0,0,25,c);
+    // p_render->draw_line(-50,0,0,75,c);
+
+    p_render->draw_polygon(points,4,c);
+
     double now = time_now();
     if(now-last_time > (1/15.0))
     {
         sprintf(buf,"FPS:%0.1f",(1.0/interval));
 
-        
         last_time = now;
     }
+    p_render->set_pen_size(30);
+    p_render->draw_text(buf,30,30,0x00000000); //render text
 
-    p_render->draw_text(buf,30,30,0xFF0000FF);
+    p_render->set_pen_size(40);
+    p_render->draw_text("test it.",30,70,0xFFFFFF00);
+    
+    //do render.
     p_render->render(interval);
 
 }
