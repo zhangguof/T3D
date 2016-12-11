@@ -1,7 +1,7 @@
 import os
 from itertools import chain
 
-arch_target = "x64"
+arch_target = "x86"
 target = 'bin/T3D'
 
 #using in mac
@@ -41,9 +41,11 @@ def build_in_darwin():
 		LIBS = libs, LIBPATH = lib_path)
 
 def build_in_win32():
-	libs = ['glew32d','glfw3', 'freetype']
+	link_flags = "/NODEFAULTLIB:library"
+	cc_flags = "/MD"
+	libs = ['Opengl32','glew32d','glfw3', 'freetype27']
 	lib_path = ['./lib/win32']
-	env.Program(target=target, source=cpp_src, LINKFLAGS=link_flags,
+	env.Program(target=target, source=cpp_src,CCFLAGS=cc_flags, LINKFLAGS=link_flags,
 		LIBS = libs, LIBPATH = lib_path)
 
 
