@@ -114,6 +114,17 @@ int points[] = {
     0,-230,
 };
 
+int tri_points[] = {
+    -100,100,
+    100,100,
+    100,-100,
+};
+int tri_points2[] = {
+    -100,100,
+    100,-100,
+    -100,-100,
+};
+
 void render(double interval)
 {
     p_render->clear_buff_color();
@@ -122,6 +133,7 @@ void render(double interval)
     //test_img(interval);
     //draw point
     Color c = 0xFF0000FF;
+    Color c2 = 0x00FF00FF;
     // p_render->draw_point(0,0,c);
     // p_render->draw_point(320,0,c);
     // p_render->draw_point(-320,0,c);
@@ -134,18 +146,23 @@ void render(double interval)
     // p_render->draw_line(-50,0,0,50,c);
     // p_render->draw_line(-50,0,0,25,c);
     // p_render->draw_line(-50,0,0,75,c);
+    p_render->draw_line(-320,0,320,0,c);
+    p_render->draw_line(0,-240,0,240,c);
+    p_render->draw_line(0,-240,0,240,c);
+    p_render->draw_line(200,-240,200,240,c);
 
-    p_render->draw_polygon(points,4,c);
+    //p_render->draw_polygon(points,4,c);
+    p_render->draw_triangle(tri_points,c);
+    p_render->draw_triangle(tri_points2,c2);
 
     double now = time_now();
     if(now-last_time > (1/15.0))
     {
         sprintf(buf,"FPS:%0.1f",(1.0/interval));
-
         last_time = now;
     }
     p_render->set_pen_size(30);
-    p_render->draw_text(buf,30,30,0x00000000); //render text
+    p_render->draw_text(buf,30,30,0xFFFFFF00); //render text
 
     p_render->set_pen_size(40);
     p_render->draw_text("test it.",30,70,0xFFFFFF00);
@@ -163,6 +180,15 @@ void init()
    //init_font("res/NotoSansCJKsc-Black.otf",25); 
     p_render->init_render();
 
+    p_render->clear_buff_color();
+
+    //render img
+    //test_img(interval);
+    //draw point
+    // Color c = 0xFF0000FF;
+    // p_render->draw_triangle(tri_points,c);
+    // p_render->draw_triangle(tri_points2,c);
+    // p_render->render(0);
     regist_update(render);
 }
 
