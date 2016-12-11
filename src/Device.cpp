@@ -152,7 +152,7 @@ Device::Device(int w, int h)
     vao->gen_vao_vbo(vertices,sizeof(vertices));
     shader.init_shader();
 }
-void Device::set_buf(DBuff* buf)
+void Device::set_buf(FrameBuffer* buf)
 {
     cur_buf = buf;
 }
@@ -210,7 +210,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 CBMgr* cb_mgr;
 GLFWwindow* glfw_window;
 
-GLFWwindow* init_glfw_window()
+GLFWwindow* init_glfw_window(int w,int h)
 {
     printf("start opengl\n");
     glfwSetErrorCallback(error_callback);
@@ -221,7 +221,7 @@ GLFWwindow* init_glfw_window()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    glfw_window = glfwCreateWindow(win_width,win_height, "test3d", NULL, NULL);
+    glfw_window = glfwCreateWindow(w,h, "test3d", NULL, NULL);
     if(!glfw_window)
     {
         glfwTerminate();
@@ -274,6 +274,11 @@ void regist_update(UpdateFunc f)
 void regist_objupdate(UpdateObj* p)
 {
     cb_mgr->add_callback2(p);
+}
+
+double time_now()
+{
+    return glfwGetTime();
 }
 
 

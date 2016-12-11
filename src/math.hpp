@@ -49,7 +49,7 @@ public:
         assert(SIZE>=3);
         return (vec[0]<<24)|(vec[1]<<16)|(vec[2]<<8);
     }
-    T get_rbga_val()
+    T get_rgba_val()
     {
         assert(SIZE>=4);
         return get_rgb_val()|(vec[3]);

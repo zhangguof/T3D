@@ -1,28 +1,30 @@
-//
-//  triangle.cpp
-//  firstTriangle
-//
-//  Created by tony on 16/3/21.
-//  Copyright © 2016年 tony. All rights reserved.
-//
-
 #include "T3D.hpp"
-//#include "text_render.hpp"
-#include "text_render.hpp"
+#include "Render.hpp"
 
-//GLuint img_data[100*100];
-DrawBuffer<GLuint> img_data(WIN_WIDTH,WIN_HEIGHT);
 
-DrawBuffer<GLuint> text_data(WIN_WIDTH,WIN_HEIGHT);
+typedef unsigned int COLOR;
+const COLOR BLACK   = 0x000000;
+const COLOR RED     = 0xFF0000;
+const COLOR GREEN   = 0x00FF00;
+const COLOR BLUE    = 0x0000FF;
+const COLOR WHITE   = 0xFFFFFF;
 
-RGB r(255,0,0);
-RGB g(0,255,0);
-RGB b(0,0,255);
-RGB col[3] = {r,g,b};
+
+RGBA r(255,0,0,1);
+RGBA g(0,255,0,1);
+RGBA b(0,0,255,1);
+RGBA col[3] = {r,g,b};
+
+
+Render* p_render;
+unsigned int p_bitmap[WIN_WIDTH*WIN_HEIGHT];
+
 
 void set_grid_img(int x,int y,int w, int h,int cnt)
 {
-    for(int i=0;i<w;i++)
+    unsigned int c = col[cnt%3].get_rgba_val();
+
+    for (int i=0;i<w;i++)
     {
         int new_x = x*w+i;
         if(new_x>=WIN_WIDTH)
@@ -30,28 +32,26 @@ void set_grid_img(int x,int y,int w, int h,int cnt)
         for(int j=0;j<h;j++)
         {
             int new_y = y*h+j;
-            if(new_y >= WIN_HEIGHT)
+            if(new_y>=WIN_HEIGHT)
                 continue;
-            img_data.set_point(new_x,new_y,col[cnt%3].get_rgb_val());
+            p_bitmap[new_x+new_y*WIN_WIDTH] = c;
+           
         }
     }
+
 }
-    
 
-
-void init_img(int start_idx=0)
+void render_test_img(int start_idx=0)
 {
 
-
-    //img_data.clear_color(rgb);
     int w = 50;
     int h = 50;
-    int nx = win_width/w;
-    int rx = win_width%w;
+    int nx = WIN_WIDTH/w;
+    int rx = WIN_WIDTH%w;
 
-    int ny = win_height/h;
-    int ry = win_height%h;
-    std::cout<<rx<<" "<<ry<<std::endl;
+    int ny = WIN_HEIGHT/h;
+    int ry = WIN_HEIGHT%h;
+
     int cnt=start_idx;
     for(int y=0;y<ny;y++)
     {
@@ -80,35 +80,90 @@ void init_img(int start_idx=0)
                 cnt++;
             }
     }
+    p_render->load_r8b8g8a8_bitmap(p_bitmap,WIN_WIDTH,WIN_HEIGHT,0,0);
 }
-
-// void text(char c)
-// {
-//     auto ch = get_char(c);
-//     img_data.overwrite(ch.buff->get_buf(), 10, 10, ch.Size[0],ch.Size[1]);
-
-
-// }
 
 
 double last_check_time = 0.0;
 int start_idx = 0;
 char buf[100];
-void test(double interval)
+
+void test_img(double interval)
 {
+    render_test_img(start_idx);
     last_check_time += interval;
     if(last_check_time > 0.5)
     {
-        //std::cout<<(1.0/interval)<<std::endl;
-        sprintf(buf,"FPS:%.2f",(1.0/interval));
-        render_text(text_data,buf,30,30,0xFF000000);
-        init_img(start_idx);
+
         last_check_time = 0.0;
+        // start_idx+=1;
+        // if(start_idx>2)
+        //     start_idx=0;
+
     }
-    //img_data.clear_color(RGB(255,255,255));
     
+}
+
+
+double last_time=0;
+
+int points[] = {
+    -310,0,
+    0,230,
+    310,0,
+    0,-230,
+};
+
+void render(double interval)
+{
+    p_render->clear_buff_color();
+
+    //render img
+    //test_img(interval);
+    //draw point
+    Color c = 0xFF0000FF;
+    // p_render->draw_point(0,0,c);
+    // p_render->draw_point(320,0,c);
+    // p_render->draw_point(-320,0,c);
+    // p_render->draw_point(315,235,c);
+    // p_render->draw_point(-100,100,c);
+    // p_render->draw_point(-100,-100,c);
+    // p_render->draw_point(100,-100,c);
+
+    // p_render->draw_line(-100,100,100,-100,c);
+    // p_render->draw_line(-50,0,0,50,c);
+    // p_render->draw_line(-50,0,0,25,c);
+    // p_render->draw_line(-50,0,0,75,c);
+
+    p_render->draw_polygon(points,4,c);
+
+    double now = time_now();
+    if(now-last_time > (1/15.0))
+    {
+        sprintf(buf,"FPS:%0.1f",(1.0/interval));
+
+        last_time = now;
+    }
+    p_render->set_pen_size(30);
+    p_render->draw_text(buf,30,30,0x00000000); //render text
+
+    p_render->set_pen_size(40);
+    p_render->draw_text("test it.",30,70,0xFFFFFF00);
     
-    
+    //do render.
+    p_render->render(interval);
+
+}
+
+void init()
+{
+
+    p_render->init_pen_font("res/Arial.ttf",30);
+
+   //init_font("res/NotoSansCJKsc-Black.otf",25); 
+    p_render->init_render();
+
+    regist_update(render);
 }
 
 
@@ -116,35 +171,19 @@ void test(double interval)
 
 int main(int argc, char **argv)
 {
-    // if (FT_Load_Char(face, 'A', FT_LOAD_RENDER))
-    // {
-    //     std::cout<<"ERROR::FREETYPE:Failed to load GLyph"<<std::endl;
-    //     return 0;
-    // }
     
     printf("starting.......\n");
-    std::cout<<VERTEX_SHADER_FILE<<" "<<FRAG_SHADER_FILE<<std::endl;
-    GLFWwindow* window = init_glfw_window();
-    
-    Device *pdev = new Device();
-    
-    init_img();
-    init_font("res/NotoSansCJKsc-Black.otf",30);
+    int width = 640;
+    int height = 480;
 
+    GLFWwindow* window = init_glfw_window(width,height);
+    p_render = new Render(width, height);
 
-    pdev->init_render();
-    //pdev->set_buf(&img_data);
-    text_data.clear_color();
-    pdev->set_buf(&text_data);
-
-    //UpdatePair p((UpdateObj*)&dev,(ObjUpdateFunc)&Device::update);
-    regist_objupdate(pdev);
-    regist_update(test);
+    init();
 
     glfw_loop();
 
 
-    
     
     glBindVertexArray(0);
     glfwDestroyWindow(window);
@@ -153,7 +192,6 @@ int main(int argc, char **argv)
     
     glfwTerminate();
     exit(EXIT_SUCCESS);
-    
-    
+
     
 }

@@ -10,6 +10,11 @@
 #include <io.h>
 #endif
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
+
 #ifdef __APPLE__
 #include <unistd.h>
 #endif
@@ -21,8 +26,16 @@
 #include <fstream>
 #include <utility>
 
+
+#include <ft2build.h>   
+#include FT_FREETYPE_H
+
+#include "Globals.hpp"
+
 #include "draw_buffer.hpp"
 #include "Device.hpp"
+
+
 
 
 

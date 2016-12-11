@@ -2,8 +2,7 @@
 #ifndef _H_TEXT_RENDER_
 #define _H_TEXT_RENDER_
 
-#include <ft2build.h>   
-#include FT_FREETYPE_H
+
 
 #include "T3D.hpp"
 
@@ -62,9 +61,12 @@ void init_font(const char* font_path, int size=45)
     if(error)
         std::cout<<"ERROR::FREETYTE: select charmap file."<<std::endl;
     
-    FT_Set_Pixel_Sizes(face, 0, size);
+    FT_Set_Pixel_Sizes(face, 0, size); 
+}
 
-    
+void set_font_size(int size=45)
+{
+    FT_Set_Pixel_Sizes(face, 0, size);
 }
 
 
@@ -128,12 +130,12 @@ Character *get_char(GLulong c)
     return &Characters[c];
 }
 
-void render_text(DrawBuffer<GLuint> &text_buff, const char* s, 
+void render_text(FrameBuffer* text_buff, const char* s, 
                 int x, int y, unsigned int color_val)
 {
-    text_buff.clear_color();
-    int width = text_buff.width;
-    int heigth = text_buff.heigth;
+    //text_buff.clear_color();
+    int width = text_buff->width;
+    int heigth = text_buff->heigth;
     // unsigned int color_val = color.get_rgb_val();
     const char* p = s;
     size_t idx = 0;
@@ -168,7 +170,7 @@ void render_text(DrawBuffer<GLuint> &text_buff, const char* s,
                 if(new_x<0 || new_x>=width || new_y<0 || new_y>=heigth)
                     continue;
                 if(ch_buf[j+i*w])
-                    text_buff.set_point(xpos+j,ypos+i,color_val);
+                    text_buff->set_point(xpos+j,ypos+i,color_val);
             }
         }
         x += (ch.Advance>>6);
