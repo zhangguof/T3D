@@ -125,6 +125,33 @@ int tri_points2[] = {
     -100,-100,
 };
 
+int tri_points3[] = {
+    0,200,
+    200,0,
+    0,-200,
+};
+
+
+int tri_points4[] = {
+    0,200,
+    200,0,
+    0,-200,
+};
+
+void draw_test_tri()
+{
+    Color c = 0xFF0000FF;
+    Color c2 = 0x00FF00FF;
+    p_render->draw_triangle(tri_points3,c2);
+}
+
+void draw_test_tri2()
+{
+    Color c = 0xFF0000FF;
+    Color c2 = 0x00FF00FF;
+    p_render->draw_triangle(tri_points4,c2;
+}
+
 void render(double interval)
 {
     p_render->clear_buff_color();
@@ -151,9 +178,10 @@ void render(double interval)
     p_render->draw_line(0,-240,0,240,c);
     p_render->draw_line(200,-240,200,240,c);
 
-    //p_render->draw_polygon(points,4,c);
-    p_render->draw_triangle(tri_points,c);
-    p_render->draw_triangle(tri_points2,c2);
+    // p_render->draw_polygon(points,4,c);
+    // p_render->draw_triangle(tri_points,c);
+    // p_render->draw_triangle(tri_points2,c2);
+    draw_test_tri();
 
     double now = time_now();
     if(now-last_time > (1/15.0))

@@ -28,6 +28,7 @@ public:
 	void draw_point(int x,int y, Color color);
 	void draw_line(int x0,int y0,int x1,int y1,Color color);
 	void draw_line(Vec2i p0, Vec2i p1, Color color);
+	void draw_line_by_y(int x0,int x1,int y,Color color);
 
 	void draw_triangle(int points[],Color color);
 

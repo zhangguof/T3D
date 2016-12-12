@@ -108,6 +108,20 @@ void Render::draw_line(Vec2i p0,Vec2i p1,Color color)
 	draw_line(p0[0],p0[1],p1[0],p1[1],color);
 }
 
+void Render::draw_line_by_y(int x0,int x1,int y,Color color)
+{
+	if(x0>x1)
+	{
+		int xt=x0;
+		x0 = x1;
+		x1 = xt;
+	}
+	for(int x=x0;x<x1;++x)
+	{
+		setPixel(x,y,color);
+	}
+}
+
 void Render::draw_triangle(int points[],Color color)
 {
 	int *p0 = &points[0];
@@ -134,9 +148,11 @@ void Render::draw_triangle(int points[],Color color)
 	}
 	//printf("%d,%d:%d,%d:%d,%d\n",p0[0],p0[1],p1[0],p1[1],p2[0],p2[1]);
 
-	float m0 = float(p2[1]-p0[1])/float(p2[0]-p0[0]);
-	float m1 = float(p1[1]-p0[1])/float(p1[0]-p0[0]);
-	float m2 = float(p2[1]-p1[1])/float(p2[0]-p1[0]);
+	//y=kx+b,m = 1/k
+	float m0 = float(p2[0]-p0[0])/float(p2[1]-p0[1]);
+	float m1 = float(p1[0]-p0[0])/float(p1[1]-p0[1]);
+	float m2 = float(p2[0]-p1[0])/float(p2[1]-p1[1]);
+
 	//printf("%f,%f,%f\n", m0,m1,m2);
 
 	float x0 = p0[0];
@@ -144,63 +160,38 @@ void Render::draw_triangle(int points[],Color color)
 	for(int y = p0[1];y<p1[1];++y)
 	{
 		//printf("%d\n",y);
+		x0 += m0;
+		x1 += m1;
+		// if(isnormal(m0))
+		// {
+		// 	x0+=(1.0/m0);
+		// }
 		
-		if(m0!=INF)
-		{
-			x0+=(1.0/m0);
-		}
-		
-		if(m1!=INF)
-		{
-			x1+=(1.0/m1);
-		}
+		// if(isnormal(m1))
+		// {
+		// 	x1+=(1.0/m1);
+		// }
 		//printf("x0:%f,x1:%f\n",x0,x1);
-		int x_start,x_end;
-		if(x0<=x1)
-		{
-			x_start = round(x0);
-			x_end = round(x1);
-		}
-		else
-		{
-			x_start = round(x1);
-			x_end = round(x0);
-		}
-		for(int x=x_start;x<x_end;++x)
-		{
-			setPixel(x,y,color);
-		}
+		draw_line_by_y(round(x0),round(x1),y,color);
+
 	}
 	x1 = p1[0];
 	for(int y=p1[1];y<p2[1];++y)
 	{
-		if(m0!=INF)
-		{
-			x0+=(1.0/m0);
-		}
-		if(m2!=INF)
-		{
-			x1+=(1.0/m2);
-		}
+		x0 += m0;
+		x1 += m2;
+		// if(isnormal(m0))
+		// {
+		// 	x0+=(1.0/m0);
+		// }
+		// if(isnormal(m2))
+		// {
+		// 	x1+=(1.0/m2);
+		// }
 		//printf("x0:%f,x1:%f\n",x0,x1);
-		int x_start,x_end;
-		if(x0<=x1)
-		{
-			x_start = round(x0);
-			x_end = round(x1);
-		}
-		else
-		{
-			x_start = round(x1);
-			x_end = round(x0);
-		}
-		for(int x=x_start;x<x_end;++x)
-		{
-			setPixel(x,y,color);
-		}
+		draw_line_by_y(round(x0),round(x1),y,color);
+
 	}
-
-
 }
 
 void Render::draw_polygon(int points[],int cnt, Color color)
