@@ -149,7 +149,7 @@ void draw_test_tri2()
 {
     Color c = 0xFF0000FF;
     Color c2 = 0x00FF00FF;
-    p_render->draw_triangle(tri_points4,c2;
+    p_render->draw_triangle(tri_points4,c2);
 }
 
 void render(double interval)

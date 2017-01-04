@@ -6,11 +6,46 @@
 #include <map>
 #include <vector>
 
+template<typename T, unsigned int SIZE>
+struct VecBase
+{
+    T vec[SIZE];
+};
 
+template<typename T>
+struct VecBase<T,2>
+{
+    union{
+        T vec[2];
+        struct{ T x,y;};
+        struct{ T s,t;};
+    };
+};
+
+template<typename T>
+struct VecBase<T,3>
+{
+    union{
+        T vec[3];
+        struct{ T x,y,z;};
+        struct{ T r,g,b;};
+        //struct{ T s,t,r;};
+    };
+};
+
+template<typename T>
+struct VecBase<T,4>
+{
+    union{
+        T vec[4];
+        struct{ T x,y,z,w;};
+        struct{ T r,g,b,a;};
+        //struct{ T s,t,r,q;};
+    };
+};
 
 template<typename T, unsigned int SIZE>
-class Vec
-{
+class Vec:public VecBase<T, SIZE>{
     T vec[SIZE];
     const static int size = SIZE;
 public:
@@ -58,8 +93,11 @@ public:
     {
         return vec[index];
     }
-
 };
+
+
+
+
 
 typedef Vec<int,2> Vec2i;
 typedef Vec<int,3> Vec3i;

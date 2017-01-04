@@ -105,7 +105,8 @@ void Render::draw_line(int x0,int y0,int x1,int y1,Color color)
 
 void Render::draw_line(Vec2i p0,Vec2i p1,Color color)
 {
-	draw_line(p0[0],p0[1],p1[0],p1[1],color);
+	//draw_line(p0[0],p0[1],p1[0],p1[1],color);
+	draw_line(p0.x,p0.y,p1.x,p1.y,color);
 }
 
 void Render::draw_line_by_y(int x0,int x1,int y,Color color)
