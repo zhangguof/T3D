@@ -220,11 +220,31 @@ void init()
     regist_update(render);
 }
 
+void test_mat()
+{
+    int a[] = {1,2,3,4};
+    int b[] = {1,3,5,6,0,4};
+
+    MatNxM<int,2,2> ma(a);
+    MatNxM<int,2,3> mb(b);
+
+    MatNxM<int,2,3> mc;
+    mc = ma.mul<3>(mb);
+    std::cout<<"Mat A:"<<std::endl;
+    ma.print_mat();
+    std::cout<<"Mat B:"<<std::endl;
+    mb.print_mat();
+    
+
+    std::cout<<"Mat C:"<<std::endl;
+    mc.print_mat();
+}
 
 
 
 int main(int argc, char **argv)
 {
+    test_mat();
     
     printf("starting.......\n");
     int width = 640;

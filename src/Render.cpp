@@ -81,14 +81,14 @@ void Render::draw_line(int x0,int y0,int x1,int y1,Color color)
 	int setps;
 	float xinc,yinc;
 	//m>1
-	if(fabs(dx)>fabs(dy))
+	if(std::abs(dx)>std::abs(dy))
 	{
 		//inc in y.
-		setps = fabs(dx);
+		setps = std::abs(dx);
 	}
 	else
 	{
-		setps = fabs(dy);
+		setps = std::abs(dy);
 	}
 	xinc = float(dx)/float(setps);
 	yinc = float(dy)/float(setps);
