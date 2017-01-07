@@ -198,6 +198,7 @@ typedef Vec<float,4> Vec4f;
 typedef Vec3u RGB;
 typedef Vec4u RGBA;
 
+
 template<typename T>
 class Mat2x2
 {
@@ -237,39 +238,50 @@ class MatNxM
     typedef Vec<T,row_num> col_type;
     
 public:
-    T mat[size];
+    //T mat[size];
+    row_type rows[row_num];
+
     MatNxM(){}
     MatNxM(T *a)
     {
-        for (int i = 0; i < size; ++i)
+        for (int i = 0; i < row_num; ++i)
         {
-            mat[i]=a[i];
+            rows[i] = row_type(&a[i*col_num]);
         }
     }
 
-    MatNxM(mat_reference_const m)
+    MatNxM(mat_reference m)
     {
-        for(int i=0;i<size;++i)
+        for(int i=0;i<row_num;++i)
         {
-            mat[i] = m.mat[i];
+            rows[i] = m[i];
         }
+    }
+
+    row_type &operator[](unsigned int index)
+    {
+        assert(index<row_num);
+        return rows[index];
     }
 
     T get(int n,int m)
     {
         assert(n<row_num && m<col_num);
-        return mat[n*col_num + m];
+        //return mat[n*col_num + m];
+        return rows[n][m];
     }
     void set(int n,int m, T val)
     {
         assert(n<row_num && m<col_num);
-        mat[n*col_num + m] = val;
+        //mat[n*col_num + m] = val;
+        rows[n][m] = val;
     }
     row_type get_row(int n)
     {
         assert(n<row_num);
-        row_type v(&mat[n*col_num]);
-        return v;
+        //row_type v(&mat[n*col_num]);
+        //return v;
+        return rows[n];
     }
     col_type get_col(int m)
     {
@@ -278,7 +290,7 @@ public:
         for(int i=0;i<row_num;++i)
         {
             //v[i] = this->get(i,m);
-            v[i] = mat[i*col_num + m];
+            v[i] = rows[i][m];
         }
         return v;
     }
@@ -286,9 +298,10 @@ public:
     mat_reference operator+=(mat_reference_const &m)
     {
         assert(this->row_num == m.row_num && this->col_num==m.col_num);
-        for(int i=0;i<size;++i)
+        for(int i=0;i<row_num;++i)
         {
-            this->mat[i] += m.mat[i];
+            //this->mat[i] += m.mat[i];
+            this->rows[i] += m[i];
         }
         return *this;
         
@@ -298,9 +311,10 @@ public:
     mat_reference operator-=(mat_reference_const &m)
     {
         assert(this->row_num == m.row_num && this->col_num==m.col_num);
-        for(int i=0;i<size;++i)
+        for(int i=0;i<row_num;++i)
         {
-            this->mat[i] -= m.mat[i];
+            //this->mat[i] -= m.mat[i];
+            this->rows[i] -= m[i];
         }
         return *this;
         
@@ -310,9 +324,10 @@ public:
     {
         assert(this->row_num == m.row_num && this->col_num==m.col_num);
         mat_type r;
-        for (int i = 0; i < size; ++i)
+        for (int i = 0; i < row_num; ++i)
         {
-            r.mat[i] = this->mat[i] + m.mat[i];
+            //r.mat[i] = this->mat[i] + m.mat[i];
+            r[i] = rows[i] + m[i];
         }
     }
 
@@ -321,9 +336,10 @@ public:
     {
         assert(this->row_num == m.row_num && this->col_num==m.col_num);
         mat_type r;
-        for (int i = 0; i < size; ++i)
+        for (int i = 0; i < row_num; ++i)
         {
-            r.mat[i] = this->mat[i] - m.mat[i];
+            //r.mat[i] = this->mat[i] - m.mat[i];
+            r[i] = rows[i] - m[i];
         }
     }
 
@@ -334,16 +350,24 @@ public:
         MatNxM<T,N,R> r_mat;
         for(int i=0;i<N;++i)
         {
-            Vec<T,M> row_i = this->get_row(i);
+            //Vec<T,M> row_i = this->get_row(i);
             //std::cout<<"in row:"<<i<<std::endl;
             //row_i.print_vec();
             for(int j=0;j<R;++j)
             {
                 //std::cout<<"in col:"<<j<<std::endl;
                 //m.get_col(j).print_vec();
-                T cij = row_i.dot(m.get_col(j));
+                //T cij = row_i.dot(m.get_col(j));
+                T cij = static_cast<T>(0);
+                for(int ii=0;ii<M;++ii)
+                {
+                    //cij += this->get(i,ii) * m.get(ii,j);
+                    //cij += this->mat[i*M+ii] * m.mat[ii*R+j];
+                    cij += rows[i][ii] * m[ii][j];
+                }
                 //std::cout<<"sum:"<<cij<<std::endl;
-                r_mat.set(i,j,cij);
+                //r_mat.set(i,j,cij);
+                r_mat[i][j] = cij;
             }
         }
         return r_mat;
@@ -358,6 +382,16 @@ public:
         return this->mul<N>(m);
     }
 
+    Vec<T,N> operator*(Vec<T,M> &v)
+    {
+        Vec<T,N> r;
+        for (int i = 0; i < N; ++i)
+        {
+            r[i] = rows[i].dot(v);
+        }
+        return r;
+    }
+
     void print_mat()
     {
         for (int i = 0; i < row_num; ++i)
@@ -370,6 +404,20 @@ public:
         }
     }
 };
+
+typedef MatNxM<float,2,2> Mat2x2f;
+typedef MatNxM<float,3,3> Mat3x3f;
+typedef MatNxM<float,4,4> Mat4x4f;
+
+typedef MatNxM<int,2,2> Mat2x2i;
+typedef MatNxM<int,3,3> Mat3x3i;
+typedef MatNxM<int,4,4> Mat4x4i;
+
+
+
+
+
+
 
 
 
