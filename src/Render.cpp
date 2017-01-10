@@ -127,6 +127,16 @@ void Render::draw_line_by_y(int x0,int x1,int y,Color color)
 	}
 }
 
+void Render::draw_triangle(Vec3i vertexs[],Color color)
+{
+	int points[] = {
+		vertexs[0].x,vertexs[0].y,
+		vertexs[1].x,vertexs[1].y,
+		vertexs[2].x,vertexs[2].y,
+	};
+	draw_triangle(points,color);
+}
+
 void Render::draw_triangle(int points[],Color color)
 {
 	int *p0 = &points[0];

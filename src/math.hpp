@@ -53,7 +53,9 @@ class Vec:public VecBase<T, SIZE>{
     typedef vec_type & vec_reference;
     typedef vec_type const & vec_reference_const; 
 public:
-    Vec(){}
+    Vec(){
+        mem_set(static_cast<T>(0));
+    }
     Vec(T *a)
     {
         mem_cpy(a,SIZE);
@@ -82,6 +84,13 @@ public:
         this->vec[1] = b;
         this->vec[2] = c;
         this->vec[3] = d;
+    }
+    void mem_set(T val)
+    {
+        for(int i=0;i<size;++i)
+        {
+            this->vec[i] = val;
+        }
     }
     void mem_cpy(T* a, int size)
     {
@@ -250,12 +259,23 @@ public:
         }
     }
 
+
     MatNxM(mat_reference m)
     {
         for(int i=0;i<row_num;++i)
         {
             rows[i] = m[i];
         }
+    }
+
+    mat_reference identity()
+    {
+        static_assert(N==M,"identity must use in  NxM matrix");
+        for(int i=0;i<N;++i)
+        {
+            rows[i][i] = static_cast<T>(1);
+        }
+        return *this;
     }
 
     row_type &operator[](unsigned int index)
@@ -380,6 +400,12 @@ public:
     MatNxM<T,N,N> operator*(MatNxM<T,M,N> &m)
     {
         return this->mul<N>(m);
+    }
+
+    MatNxM<T,N,N> &operator*=(MatNxM<T,N,N>  &m)
+    {
+        *this = this->mul<N>(m);
+        return *this;
     }
 
     Vec<T,N> operator*(Vec<T,M> &v)

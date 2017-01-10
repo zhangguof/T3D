@@ -132,6 +132,12 @@ int tri_points3[] = {
     0,-200,
 };
 
+Vec3i tri_vertexs[] = {
+    Vec3i(0,200,1),
+    Vec3i(200,0,1),
+    Vec3i(0,-200,1),
+};
+
 
 int tri_points4[] = {
     0,200,
@@ -139,11 +145,22 @@ int tri_points4[] = {
     0,-200,
 };
 
+
 void draw_test_tri()
 {
     Color c = 0xFF0000FF;
     Color c2 = 0x00FF00FF;
-    p_render->draw_triangle(tri_points3,c2);
+    MatTran<int,3> mtran;
+    mtran.mat_move_to_xy(Vec3i(100,100,1));
+    Vec3i verts[] = {
+        mtran.trans(tri_vertexs[0]),
+        mtran.trans(tri_vertexs[1]),
+        mtran.trans(tri_vertexs[2]),
+    };
+    verts[0].print_vec();
+    verts[1].print_vec();
+    verts[2].print_vec();
+    p_render->draw_triangle(verts,c2);
 }
 
 void draw_test_tri2()
