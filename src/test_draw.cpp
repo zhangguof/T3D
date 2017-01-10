@@ -128,7 +128,7 @@ int tri_points2[] = {
 
 int tri_points3[] = {
     0,200,
-    200,0,
+    800,0,
     0,-200,
 };
 
@@ -174,10 +174,10 @@ void render(double interval)
     // p_render->draw_line(-50,0,0,50,c);
     // p_render->draw_line(-50,0,0,25,c);
     // p_render->draw_line(-50,0,0,75,c);
-    p_render->draw_line(-320,0,320,0,c);
-    p_render->draw_line(0,-240,0,240,c);
-    p_render->draw_line(0,-240,0,240,c);
-    p_render->draw_line(200,-240,200,240,c);
+    
+   p_render->draw_line(-320,0,320,0,c);
+   p_render->draw_line(0,-240,0,240,c);
+   p_render->draw_line(200,-240,200,240,c);
 
     // p_render->draw_polygon(points,4,c);
     // p_render->draw_triangle(tri_points,c);
@@ -198,6 +198,9 @@ void render(double interval)
     
     //do render.
     p_render->render(interval);
+    // unsigned int b[640][480];
+    // p_render->get_buff()->dump<480>(b);
+    
 
 }
 
@@ -244,7 +247,7 @@ void test_mat()
 
 
 
-int main(int argc, char **argv)
+int test_main(int argc, char **argv)
 {
     test_mat();
     
