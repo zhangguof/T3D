@@ -66,7 +66,11 @@ void Render::load_r8b8g8a8_bitmap(unsigned int* pbuff,int w,int h,int x0,int y0)
 //working center coord
 void Render::setPixel(int x, int y, Color color)
 {
-	pframe_buffer->set_alpha_pixel(ADDR_X(x),ADDR_Y(y),color);
+    int xx = ADDR_X(x);
+    int yy = ADDR_Y(y);
+    if(xx<0 || xx>=width || yy<0 || yy>=height)
+        return;
+	pframe_buffer->set_alpha_pixel(xx,yy,color);
 }
 void Render::draw_point(int x,int y, Color color)
 {

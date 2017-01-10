@@ -110,6 +110,20 @@ public:
     {
         delete[] data;
     }
+    template<unsigned int COL>
+    void dump(T d[][COL])
+    {
+        //T **d = new T*[heigth];
+        for(int i=0;i<heigth;++i)
+        {
+            //d[i] = new T[width];
+            for(int j=0;j<width;++j)
+            {
+                d[i][j] = data[j+i*width];
+            }
+        }
+        //return d;
+    }
 };
 
 
