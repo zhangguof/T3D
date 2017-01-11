@@ -7,6 +7,8 @@
 #include <vector>
 #include <cmath>
 
+const double PI = 3.141592653;
+
 template<typename T, unsigned int SIZE>
 struct VecBase
 {

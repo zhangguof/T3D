@@ -132,10 +132,10 @@ int tri_points3[] = {
     0,-200,
 };
 
-Vec3i tri_vertexs[] = {
-    Vec3i(0,200,1),
-    Vec3i(200,0,1),
-    Vec3i(0,-200,1),
+Vec3f tri_vertexs[] = {
+    Vec3f(0,200,1),
+    Vec3f(200,0,1),
+    Vec3f(0,-200,1),
 };
 
 
@@ -145,21 +145,39 @@ int tri_points4[] = {
     0,-200,
 };
 
+double time_pass = 0;
+void draw_anime(double interval)
+{
+    Color c = 0xFF0000FF;
+    Color c2 = 0x00FF00FF;
+    MatTran<float,3> mtran;
+    time_pass += interval;
+    //mtran.mat_move_to(Vec3i(100,100,1));
+    mtran.mat_rotate_degree(5*time_pass);
+    Vec3f verts[] = {
+        mtran.trans(tri_vertexs[0]),
+        mtran.trans(tri_vertexs[1]),
+        mtran.trans(tri_vertexs[2]),
+    };
+
+    p_render->draw_triangle(verts,c2);
+}
 
 void draw_test_tri()
 {
     Color c = 0xFF0000FF;
     Color c2 = 0x00FF00FF;
-    MatTran<int,3> mtran;
-    mtran.mat_move_to_xy(Vec3i(100,100,1));
-    Vec3i verts[] = {
+    MatTran<float,3> mtran;
+    //mtran.mat_move_to(Vec3i(100,100,1));
+    mtran.mat_rotate_degree(30);
+    Vec3f verts[] = {
         mtran.trans(tri_vertexs[0]),
         mtran.trans(tri_vertexs[1]),
         mtran.trans(tri_vertexs[2]),
     };
-    verts[0].print_vec();
-    verts[1].print_vec();
-    verts[2].print_vec();
+    // verts[0].print_vec();
+    // verts[1].print_vec();
+    // verts[2].print_vec();
     p_render->draw_triangle(verts,c2);
 }
 
@@ -199,7 +217,9 @@ void render(double interval)
     // p_render->draw_polygon(points,4,c);
     // p_render->draw_triangle(tri_points,c);
     // p_render->draw_triangle(tri_points2,c2);
-    draw_test_tri();
+    
+    //draw_test_tri();
+    draw_anime(interval);
 
     double now = time_now();
     if(now-last_time > (1/15.0))

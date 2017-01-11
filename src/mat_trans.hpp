@@ -39,7 +39,7 @@ public:
 		return m * v;
 	}
 
-	void mat_move_to_xy(vec_type v)
+	void mat_move_to(vec_type v)
 	{
 		static_assert(N==3,"mat_move_to_xy,use in 3 dim;");
 		T data[9] = {
@@ -49,7 +49,24 @@ public:
 		};
 		mat_type m(data);
 		mat *=m;
+	}
+	void mat_rotate_degree(float degree)
+	{
+		mat_rotate_radian(degree/180.0*PI);
+	}
+	void mat_rotate_radian(float radian)
+	{
+		static_assert(N==3,"use in 3 dim;");
+		float sina = sin(radian);
+		float cosa = cos(radian);
 
+		float data[9] = {
+			cosa,-sina,0,
+			sina,cosa,0,
+			0,0,1.0,
+		};
+		MatNxM<float,3,3> m(data);
+		mat *=m;
 	}
 };
 
